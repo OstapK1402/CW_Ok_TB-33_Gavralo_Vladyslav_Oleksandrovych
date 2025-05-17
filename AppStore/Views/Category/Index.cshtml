@@ -1,0 +1,58 @@
+﻿@using AppStore.DAL.Models
+@model IEnumerable<Category>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+@{
+    var error = TempData["Error"] as string;
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">
+        @error
+    </div>
+}
+<p class="h2">Category</p>
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var category in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <p class="card-text fw-bold">@category.Name</p>
+                            <p> </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <a asp-controller="Category" asp-action="Edit" asp-route-categoryId="@category.Id"
+                                           type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                        <a asp-controller="Category" asp-action="Delete" asp-route-categoryId="@category.Id"
+                                           onclick="return confirm('Are you sure?')" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <a asp-controller="Category" asp-action="Create"
+                           class="btn btn-lg btn-outline-secondary text-center"
+                           style="display: block; padding: 8px;">
+                            <div class="card-body">
+                                <i class="bi bi-plus-lg" style="font-size: 2rem;"></i>
+                                <p class="h2">New Category</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

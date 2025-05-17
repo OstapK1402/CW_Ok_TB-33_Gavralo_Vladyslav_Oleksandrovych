@@ -1,0 +1,74 @@
+﻿@model AppFilterViewModel
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+@{
+    var error = TempData["Error"] as string;
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">
+        @error
+    </div>
+}
+<p class="h2">Apps</p>
+<div class="album py-5 bg-body-tertiary">
+
+    <form method="get" asp-action="Index" class="row g-2 align-items-center mb-4">
+        <div class="col-md-5">
+            <input type="text" name="searchTerm" value="@Model.SearchTerm"
+                   class="form-control" placeholder="🔍 Search by name..." />
+        </div>
+
+        <div class="col-md-5">
+            <select name="categoryId" class="form-select">
+                <option value="">-- All genres --</option>
+                @foreach (var category in Model.Categories)
+                {
+                   <option value="@category.Id" selected="@(category.Id == Model.CategoryId)">
+                      @category.Name
+                   </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </form>
+
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var app in Model.Apps)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        @if (app.Screenshots != null && app.Screenshots.Any())
+                        {
+                            <img class="card-img-top" src="@app.Screenshots.First().ImageUrl" alt="@app.Name Screenshot" style="height:225px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice">
+                                <title>Placeholder</title>
+                                <rect width="100%" height="100%" fill="#55595c" />
+                                <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                            </svg>
+                        }
+                        <div class="card-body">
+                            <p class="card-text">@app.Name</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a asp-controller="App" asp-action="Detail" asp-route-appId="@app.Id"
+                                       type="button" class="btn btn-sm btn-outline-secondary">Detail</a>
+                                </div>
+                                <small class="text-body-secondary">@app.Category?.Name</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
